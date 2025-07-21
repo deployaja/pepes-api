@@ -1,4 +1,4 @@
-name: pepes-proxy
+name: pepes-api
 description: Quick proxy for pepes
 container:
     image: ghcr.io/lukluk/pepes-api:latest
