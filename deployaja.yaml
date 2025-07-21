@@ -1,0 +1,27 @@
+name: pepes-proxy
+description: Quick proxy for pepes
+container:
+    image: ghcr.io/lukluk/pepes-api:latest
+    port: 8070
+env:
+    - name: DB_HOST
+      value: postgres
+    - name: DB_PORT
+      value: 5432
+    - name: DB_USER
+      value: postgres
+    - name: DB_PASSWORD
+      value: postgres
+    - name: DB_NAME
+      value: pepes
+    - name: API_PORT
+      value: 8070
+dependencies:
+  - name: "postgres"
+    type: "POSTGRESQL"
+    version: "15"
+    storage_size: "2Gi"
+resources:
+    cpu: 500m
+    memory: 1Gi
+    replicas: 1
