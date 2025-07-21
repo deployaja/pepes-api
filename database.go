@@ -88,25 +88,29 @@ func getEnv(key, defaultValue string) string {
 func SeedPluginServices() error {
 	pluginServices := []PluginService{
 		{
-			Name:       "jwt",
-			BaseConfig: `{"secret":"mysecret","alg":"HS256"}`,
-		},
-		{
-			Name:       "ip_whitelist",
-			BaseConfig: `{"allowed_ips":["127.0.0.1","192.168.1.0/24"]}`,
-		},
-		{
-			Name:       "ratelimiter",
-			BaseConfig: `{"requests_per_minute":60,"burst":10}`,
+			Name:       "auth",
+			BaseConfig: `{"auth_user":"admin","auth_pass":"password"}`,
 		},
 		{
 			Name:       "cors",
-			BaseConfig: `{"allow_origins":["*"],"allow_methods":["GET","POST"]}`,
+			BaseConfig: `{"cors_origin":"*","cors_methods":"GET,POST","cors_headers":"Content-Type,Authorization"}`,
 		},
 		{
-			Name:       "apikey",
-			BaseConfig: `{"header":"X-API-Key","keys":["demo-key-1","demo-key-2"]}`,
+			Name:       "ratelimit",
+			BaseConfig: `{"rate_limit":60,"rate_window":60}`,
 		},
+		{
+			Name:       "ipwhitelist",
+			BaseConfig: `{"whitelist_ips":"127.0.0.1,192.168.1.0/24"}`,
+		},
+		{
+			Name:       "jwt",
+			BaseConfig: `{"jwt_secret":"mysecret"}`,
+		},
+		{
+			Name:       "logging",
+			BaseConfig: `{"log_level":"info"}`,
+		},	
 	}
 
 	for _, svc := range pluginServices {
