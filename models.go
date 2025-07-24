@@ -23,6 +23,7 @@ type Route struct {
 type Domain struct {
 	ID        uint           `json:"id" gorm:"primaryKey"`
 	Name      string         `json:"name" gorm:"not null;uniqueIndex"`
+	UserId    string         `json:"user_id" gorm:"not null"`
 	Routes    []Route        `json:"routes" gorm:"foreignKey:DomainID"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
@@ -64,7 +65,8 @@ type UpdateRoutePluginRequest struct {
 
 // CreateDomainRequest represents the request body for creating a domain
 type CreateDomainRequest struct {
-	Name string `json:"name" binding:"required,min=1,max=255"`
+	Name    string `json:"name" binding:"required,min=1,max=255"`
+	UserId  string `json:"user_id" binding:"required,min=1,max=255"`	
 }
 
 // UpdateDomainRequest represents the request body for updating a domain

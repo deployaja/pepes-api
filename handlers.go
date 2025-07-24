@@ -337,6 +337,7 @@ func CreateDomain(c *gin.Context) {
 
 	domain := Domain{
 		Name: req.Name,
+		UserId: req.UserId,
 	}
 
 	if err := DB.Create(&domain).Error; err != nil {
