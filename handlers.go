@@ -466,6 +466,7 @@ func CreatePlugin(c *gin.Context) {
 		PluginSvcName: req.PluginSvcName,
 		Envs:          req.Envs,
 		Desc:          req.Desc,
+		UserId:        req.UserId,
 	}
 
 	if err := DB.Create(&plugin).Error; err != nil {

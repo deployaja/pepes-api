@@ -81,6 +81,7 @@ type CreatePluginRequest struct {
 	PluginSvcName string `json:"plugin_svc_name" binding:"required,min=1,max=255"`
 	Envs          string `json:"envs" binding:"max=1000"`
 	Desc          string `json:"desc" binding:"max=1000"`
+	UserId        string `json:"user_id" binding:"required,min=1,max=255"`
 }
 
 // UpdatePluginRequest represents the request body for updating a plugin
