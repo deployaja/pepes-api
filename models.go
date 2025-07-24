@@ -37,6 +37,7 @@ type Plugin struct {
 	PluginSvcName string         `json:"plugin_svc_name" gorm:"not null"`
 	Envs          string         `json:"envs" gorm:"type:text"`
 	Desc          string         `json:"desc" gorm:"type:text"`
+	UserId        string         `json:"user_id" gorm:"not null"`
 	CreatedAt     time.Time      `json:"created_at"`
 	UpdatedAt     time.Time      `json:"updated_at"`
 	DeletedAt     gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
