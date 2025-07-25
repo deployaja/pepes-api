@@ -335,8 +335,14 @@ func CreateDomain(c *gin.Context) {
 		return
 	}
 
+	// Check if domain name is forbidden
+	if req.Name == "sidra.id" || req.Name == "deployaja.id" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Domain name is not allowed"})
+		return
+	}
+
 	domain := Domain{
-		Name: req.Name,
+		Name:   req.Name,
 		UserId: req.UserId,
 	}
 
