@@ -167,6 +167,7 @@ func CreateRoute(c *gin.Context) {
 		Upstream: req.Upstream,
 		Plugin:   req.Plugin,
 		DomainID: req.DomainID,
+		UsePathAsPrefix: req.UsePathAsPrefix,
 	}
 
 	if err := DB.Create(&route).Error; err != nil {

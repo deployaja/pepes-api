@@ -14,6 +14,7 @@ type Route struct {
 	Plugin    string         `json:"plugin"`
 	DomainID  uint           `json:"domain_id" gorm:"not null"`
 	Domain    Domain         `json:"domain" gorm:"foreignKey:DomainID"`
+	UsePathAsPrefix bool `json:"usePathAsPrefix" gorm:"not null"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
@@ -49,6 +50,7 @@ type CreateRouteRequest struct {
 	Upstream string `json:"upstream" binding:"required,min=1,max=500"`
 	Plugin   string `json:"plugin" binding:"max=255"`
 	DomainID uint   `json:"domain_id" binding:"required,min=1"`
+	UsePathAsPrefix bool `json:"usePathAsPrefix" binding:"omitempty,boolean"`
 }
 
 // UpdateRouteRequest represents the request body for updating a route
