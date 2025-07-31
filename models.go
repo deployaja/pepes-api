@@ -14,7 +14,7 @@ type Route struct {
 	Plugin    string         `json:"plugin"`
 	DomainID  uint           `json:"domain_id" gorm:"not null"`
 	Domain    Domain         `json:"domain" gorm:"foreignKey:DomainID"`
-	UsePathAsPrefix bool `json:"usePathAsPrefix" gorm:"not null"`
+	UsePathAsPrefix bool `json:"usePathAsPrefix"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
