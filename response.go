@@ -5,6 +5,7 @@ type RouteConfig struct {
 	Path     string `json:"path"`
 	Upstream string `json:"upstream"`
 	Plugin   string `json:"plugin"`
+	UsePathAsPrefix bool `json:"usePathAsPrefix"`
 	PluginsData []Plugin `json:"plugins_data"`
 }
 
