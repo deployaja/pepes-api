@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -163,10 +164,10 @@ func CreateRoute(c *gin.Context) {
 	}
 
 	route := Route{
-		Path:     req.Path,
-		Upstream: req.Upstream,
-		Plugin:   req.Plugin,
-		DomainID: req.DomainID,
+		Path:            req.Path,
+		Upstream:        req.Upstream,
+		Plugin:          req.Plugin,
+		DomainID:        req.DomainID,
 		UsePathAsPrefix: req.UsePathAsPrefix,
 	}
 
@@ -563,29 +564,64 @@ func GetConfig(c *gin.Context) {
 
 	for _, domain := range domains {
 		domainConfig := DomainConfig{
-			Routes: make([]RouteConfig, len(domain.Routes)),
-		}
-		var listPlugins []Plugin
-		if err := DB.Find(&listPlugins).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": formatDatabaseError(err)})
-			return
+			Routes: []RouteConfig{}, // Initialize as empty slice
 		}
 
-		for i, route := range domain.Routes {
-			var filteredPlugins []Plugin
-			for _, plugin := range listPlugins {
-				if strings.Contains(route.Plugin, plugin.NamePlugin) {
-					filteredPlugins = append(filteredPlugins, plugin)
+		// Filter out soft-deleted routes and collect valid ones
+		var validRoutes []RouteConfig
+		for _, route := range domain.Routes {
+			// Skip soft-deleted routes
+			if route.DeletedAt.Valid {
+				continue
+			}
+
+			var filteredPlugins []PluginData
+			if route.Plugin != "" {
+				var listPlugins []Plugin
+				if err := DB.Find(&listPlugins).Error; err != nil {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": formatDatabaseError(err)})
+					return
+				}
+
+				for _, plugin := range listPlugins {
+					// Skip soft-deleted plugins
+					if plugin.DeletedAt.Valid {
+						continue
+					}
+					if strings.Contains(route.Plugin, plugin.NamePlugin) {
+						// Convert Plugin to PluginData
+						var deletedAt *string
+						if plugin.DeletedAt.Valid {
+							deletedAtStr := plugin.DeletedAt.Time.Format(time.RFC3339)
+							deletedAt = &deletedAtStr
+						}
+
+						pluginData := PluginData{
+							ID:            int(plugin.ID),
+							NamePlugin:    plugin.NamePlugin,
+							PluginSvcName: plugin.PluginSvcName,
+							Envs:          plugin.Envs,
+							Desc:          plugin.Desc,
+							CreatedAt:     plugin.CreatedAt.Format(time.RFC3339),
+							UpdatedAt:     plugin.UpdatedAt.Format(time.RFC3339),
+							DeletedAt:     deletedAt,
+						}
+						filteredPlugins = append(filteredPlugins, pluginData)
+					}
 				}
 			}
-			domainConfig.Routes[i] = RouteConfig{
-				Path:        route.Path,
-				Upstream:    route.Upstream,
-				Plugin:      route.Plugin,
-				PluginsData: filteredPlugins,
+
+			routeConfig := RouteConfig{
+				Path:            route.Path,
+				Upstream:        route.Upstream,
+				Plugin:          route.Plugin,
+				UsePathAsPrefix: route.UsePathAsPrefix,
+				PluginsData:     filteredPlugins,
 			}
+			validRoutes = append(validRoutes, routeConfig)
 		}
 
+		domainConfig.Routes = validRoutes
 		config.Domains[domain.Name] = domainConfig
 	}
 
